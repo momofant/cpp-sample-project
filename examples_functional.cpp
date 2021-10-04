@@ -157,8 +157,7 @@ EXAMPLE_FUNCTION(functional_demo, 0)
     cout << e << ' ';
   cout << endl;
 
-  ranges::for_each(arr | views::reverse, print_int);
-
+  // ranges::for_each(arr | views::reverse, print_int);
 
   // auto v1 = r | views::take(5);
   // auto v2 = r | views::drop(5);

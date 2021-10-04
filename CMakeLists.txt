@@ -24,12 +24,14 @@ add_executable(
 	examples_threads.cpp
 	examples_containers.cpp
 )
+
 target_compile_features(democpp PUBLIC cxx_std_20)
+
 target_compile_options(democpp PUBLIC 
-	-pedantic-errors 
 	-Wno-unused-value 
 	-ftemplate-depth=2048
 	-fconstexpr-depth=100000
+	-pedantic-errors 
 )
 target_compile_definitions(democpp PUBLIC "$<$<CONFIG:DEBUG>:DEBUG>")
 target_link_libraries(democpp pthread)

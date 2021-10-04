@@ -1336,6 +1336,7 @@ struct prime_generator {
     }
     iterator(int initial_value, int index) : 
       value(initial_value), index(index) {}
+
     inline void next() {
       int i = value + 1;
       while (!is_prime(i)) { ++ i; }
@@ -1346,7 +1347,7 @@ struct prime_generator {
       next();
       return *this;
     }
-    inline bool operator == (iterator const& other) {
+    inline bool operator == (iterator const& other) const {
       return other.index == index;
     }
     inline int operator * () const {
@@ -1412,7 +1413,7 @@ EXAMPLE_FUNCTION(ranges_2, 0)
 
 EXAMPLE_FUNCTION(ranges_3, 0)
 {
-  auto i = std::views::iota(1, 5);
+  // auto i = std::views::iota(1, 5);
 }
 
 /*
@@ -1472,7 +1473,7 @@ namespace concept_demo_2
 
   template <std::floating_point T>
   inline bool equal(T a, T b) {
-    return abs(a - b) < 1e-12;
+    return std::abs(a - b) < 1e-12;
   }
 
   template <typename T>
