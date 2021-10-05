@@ -9,9 +9,11 @@
 #include <numeric>
 #include <cctype>
 #include <string>
-#include "examples.h"
 #include <memory>
 #include <string.h>
+#include <array>
+#include <ranges>
+#include "examples.h"
 
 
 template <typename T>
@@ -140,25 +142,25 @@ namespace template_constexpr_fun
 
 namespace gen_seq_v1
 {
-  template <ulong ... Args>
+  template <unsigned long ... Args>
   struct sequence {};
 
-  template <ulong First, ulong ... Tail>
+  template <unsigned long First, unsigned long ... Tail>
   struct generate {
     using type = typename generate<First-1, First, Tail...>::type;
   };
 
-  template <ulong ... Tail>
+  template <unsigned long ... Tail>
   struct generate<0, Tail...> {
     using type = sequence<Tail...>;
   };
 
-  template <ulong N>
+  template <unsigned long N>
   using sequence_t = typename generate<N>::type;
 
-  template <ulong ... Indices>
-  std::array<ulong, sizeof...(Indices)> gen_seq(sequence<Indices...>) {
-    return std::array<ulong, sizeof...(Indices)>{Indices...};
+  template <unsigned long ... Indices>
+  std::array<unsigned long, sizeof...(Indices)> gen_seq(sequence<Indices...>) {
+    return std::array<unsigned long, sizeof...(Indices)>{Indices...};
   }
 
   EXAMPLE_FUNCTION(gen_seq_v1, 0)
@@ -172,10 +174,10 @@ namespace gen_seq_v1
 
 namespace gen_seq_v2
 {
-  template <ulong First, ulong ... Tail>
+  template <unsigned long First, unsigned long ... Tail>
   struct generate : public generate<First-1, First, Tail...> {};
 
-  template <ulong ... Values>
+  template <unsigned long ... Values>
   struct generate<0, Values...> {
     constexpr static std::array<int, sizeof...(Values)> values = { Values... };
   };
@@ -190,34 +192,34 @@ namespace gen_seq_v2
 
 namespace gen_prime_numbers_v2
 {
-  template <ulong N, ulong Iterator, bool Continue>
+  template <unsigned long N, unsigned long Iterator, bool Continue>
   struct __is_prime {
     static const bool value = (N % Iterator != 0) && 
         __is_prime<N, Iterator+1, (N/Iterator >= Iterator)>::value;
   };
 
-  template <ulong N, ulong Iterator> 
+  template <unsigned long N, unsigned long Iterator> 
   struct __is_prime<N, Iterator, false> {
     static const bool value = true;
   };
 
-  template <ulong N>
+  template <unsigned long N>
   struct is_prime : __is_prime<N, 2, (N/2 >= 2)> {};
 
-  template <ulong N, bool P=is_prime<N>::value>
+  template <unsigned long N, bool P=is_prime<N>::value>
   struct next_prime : next_prime<N+1> {};
 
-  template <ulong N>
+  template <unsigned long N>
   struct next_prime<N,true> {
-    static const ulong value = N;
+    static const unsigned long value = N;
   };
 
-  template <ulong K, ulong First, ulong ... Tail>
+  template <unsigned long K, unsigned long First, unsigned long ... Tail>
   struct generator : generator <K - 1, next_prime<First+1>::value, First, Tail...> {};
 
-  template <ulong First, ulong ... Args>
+  template <unsigned long First, unsigned long ... Args>
   struct generator<0, First, Args...> {
-    constexpr static ulong value[sizeof...(Args) + 1] = {First, Args...};
+    constexpr static unsigned long value[sizeof...(Args) + 1] = {First, Args...};
   };
 
   EXAMPLE_FUNCTION(gen_prime_numbers_v2, 0)
@@ -230,34 +232,34 @@ namespace gen_prime_numbers_v2
 
 namespace gen_prime_numbers_v3
 {
-  template <ulong N, ulong Iterator, bool Continue>
+  template <unsigned long N, unsigned long Iterator, bool Continue>
   struct __is_prime {
     static const bool value = (N % Iterator != 0) && 
         __is_prime<N, Iterator+1, (N/Iterator >= Iterator)>::value;
   };
 
-  template <ulong N, ulong Iterator> 
+  template <unsigned long N, unsigned long Iterator> 
   struct __is_prime<N, Iterator, false> {
     static const bool value = N > 1;
   };
 
-  template <ulong N>
+  template <unsigned long N>
   struct is_prime : __is_prime<N, 2, (N/2 >= 2)> {};
 
-  template <ulong N, bool P=is_prime<N>::value>
+  template <unsigned long N, bool P=is_prime<N>::value>
   struct next_prime : next_prime<N+1> {};
 
-  template <ulong N>
+  template <unsigned long N>
   struct next_prime<N,true> {
-    static const ulong value = N;
+    static const unsigned long value = N;
   };
 
-  template <ulong K, ulong Actual=2, ulong ... Array>
+  template <unsigned long K, unsigned long Actual=2, unsigned long ... Array>
   struct prime_generator : prime_generator <K - 1, next_prime<Actual+1>::value, Array..., Actual> {};
 
-  template <ulong Actual, ulong ... Array>
+  template <unsigned long Actual, unsigned long ... Array>
   struct prime_generator<0, Actual, Array...> {
-    constexpr static ulong value[sizeof...(Array)] = {Array...};
+    constexpr static unsigned long value[sizeof...(Array)] = {Array...};
   };
 
   EXAMPLE_FUNCTION(gen_prime_numbers_v3, 0)
@@ -270,7 +272,7 @@ namespace gen_prime_numbers_v3
 
 namespace gen_prime_numbers_v4
 {
-  constexpr bool is_prime(ulong value)
+  constexpr bool is_prime(unsigned long value)
   {
     for (int i = 2; i <= value / i; ++ i)
     {
@@ -280,14 +282,14 @@ namespace gen_prime_numbers_v4
     return true;
   }
 
-  template <ulong N>
-  constexpr std::array<ulong, N> gen_primes()
+  template <unsigned long N>
+  constexpr std::array<unsigned long, N> gen_primes()
   {
     static_assert(N > 0);
 
-    ulong value = 2;
+    unsigned long value = 2;
     int nfound = 1;
-    std::array<ulong, N> primes = {value};
+    std::array<unsigned long, N> primes = {value};
     ++ value;
 
     while (nfound < N)
@@ -386,13 +388,13 @@ namespace template_specialization
     // i.norm(); // ошибка
   }
 
-  template <uint N>
+  template <unsigned N>
   struct factorial {
-    static const uint value = N * factorial<N-1>::value;
+    static const unsigned value = N * factorial<N-1>::value;
   };
   template <>
   struct factorial<0> {
-    static const uint value = 1;
+    static const unsigned value = 1;
   };
 
   static_assert(factorial<5>::value == 120);
@@ -586,21 +588,21 @@ namespace several_types_specialization_v2
   }
 }
 
-namespace several_types_specialization_v3
-{
-  template <typename T>
-  std::enable_if_t<!std::is_literal_type<T>::value, int> f() { return 0; }
-
-  template <typename T>
-  std::enable_if_t<std::is_literal_type<T>::value, int> f() { return 1; }
-
-  EXAMPLE_FUNCTION(several_types_specialization_v3, 0)
-  {
-    std::cout << f<std::any>() << std::endl;
-    std::cout << f<int>() << std::endl;
-  }
-
-}
+//namespace several_types_specialization_v3
+//{
+//  template <typename T>
+//  std::enable_if_t<!std::is_literal_type<T>::value, int> f() { return 0; }
+//
+//  template <typename T>
+//  std::enable_if_t<std::is_literal_type<T>::value, int> f() { return 1; }
+//
+//  EXAMPLE_FUNCTION(several_types_specialization_v3, 0)
+//  {
+//    std::cout << f<std::any>() << std::endl;
+//    std::cout << f<int>() << std::endl;
+//  }
+//
+//}
 
 EXAMPLE_FUNCTION(foreach_demo, 0)
 {
@@ -622,72 +624,72 @@ EXAMPLE_FUNCTION(foreach_demo, 0)
 // static_assert(std::is_literal_type<A>::value);
 // static_assert(!std::is_literal_type<B>::value);
 
-namespace partial_template_specialization
-{
-  template <typename T, typename S>
-  struct A { int x = 5; };
-
-  template <typename T>
-  struct A<T, T> { int x = 10; };
-
-  EXAMPLE_FUNCTION(partial_template_specialization, 0)
-  {
-    A<int,int> a;
-    A<int,float> b;
-
-    assert(a.x == 10);
-    assert(b.x == 5);
-  }
-
-  template <typename T>
-  struct B {
-    static void f() { std::cout << "not vector" << std::endl; }
-  };
-
-  template <typename T>
-  struct B<std::vector<T>> {
-    static void f() { std::cout << "vector" << std::endl; }
-  };
-
-  EXAMPLE_FUNCTION(partial_template_specialization_2, 0)
-  {
-    B<char>::f();
-    B<std::vector<float>>::f();
-  }
-
-  template <
-    typename T,
-    bool L=std::is_literal_type<T>::value,
-    bool A=std::is_arithmetic<T>::value,
-    bool I=std::is_integral<T>::value
-  >
-  struct C {
-    constexpr static char s[] = "other type";
-  };
-
-  template <typename T>
-  struct C<T,true,false,false> {
-    constexpr static char s[] = "literal";
-  };
-
-  template <typename T>
-  struct C<T,true,true,false> {
-    constexpr static char s[] = "arithmetic";
-  };
-
-  template <typename T>
-  struct C<T,true,true,true> {
-    constexpr static char s[] = "integral";
-  };
-
-  EXAMPLE_FUNCTION(type_cast, 0)
-  {
-    std::cout << "int: " << C<int>::s << std::endl;
-    std::cout << "float: " << C<float>::s << std::endl;
-    std::cout << "std::array<float,1>: " << C<std::array<float,1>>::s << std::endl;
-    std::cout << "std::string: " << C<std::string>::s << std::endl;
-  }
-}
+//namespace partial_template_specialization
+//{
+//  template <typename T, typename S>
+//  struct A { int x = 5; };
+//
+//  template <typename T>
+//  struct A<T, T> { int x = 10; };
+//
+//  EXAMPLE_FUNCTION(partial_template_specialization, 0)
+//  {
+//    A<int,int> a;
+//    A<int,float> b;
+//
+//    assert(a.x == 10);
+//    assert(b.x == 5);
+//  }
+//
+//  template <typename T>
+//  struct B {
+//    static void f() { std::cout << "not vector" << std::endl; }
+//  };
+//
+//  template <typename T>
+//  struct B<std::vector<T>> {
+//    static void f() { std::cout << "vector" << std::endl; }
+//  };
+//
+//  EXAMPLE_FUNCTION(partial_template_specialization_2, 0)
+//  {
+//    B<char>::f();
+//    B<std::vector<float>>::f();
+//  }
+//
+//  template <
+//    typename T,
+//    bool L=std::is_literal_type<T>::value,
+//    bool A=std::is_arithmetic<T>::value,
+//    bool I=std::is_integral<T>::value
+//  >
+//  struct C {
+//    constexpr static char s[] = "other type";
+//  };
+//
+//  template <typename T>
+//  struct C<T,true,false,false> {
+//    constexpr static char s[] = "literal";
+//  };
+//
+//  template <typename T>
+//  struct C<T,true,true,false> {
+//    constexpr static char s[] = "arithmetic";
+//  };
+//
+//  template <typename T>
+//  struct C<T,true,true,true> {
+//    constexpr static char s[] = "integral";
+//  };
+//
+//  EXAMPLE_FUNCTION(type_cast, 0)
+//  {
+//    std::cout << "int: " << C<int>::s << std::endl;
+//    std::cout << "float: " << C<float>::s << std::endl;
+//    std::cout << "std::array<float,1>: " << C<std::array<float,1>>::s << std::endl;
+//    std::cout << "std::string: " << C<std::string>::s << std::endl;
+//  }
+//}
 
 
 namespace concept_demo
@@ -1098,7 +1100,7 @@ template<typename T>
 inline constexpr bool always_false_v = false;
 
 template <typename T>
-auto round(T const& a) {
+auto round_(T const& a) {
   if constexpr (std::is_same_v<T, float>) {
     return a > 0 ? int(a + 0.5f) : int(a - 0.5f);
   }
@@ -1115,9 +1117,9 @@ auto round(T const& a) {
 
 EXAMPLE_FUNCTION(if_constexpr_1, 0)
 {
-  auto a = round(4);
+  auto a = round_(4);
   std::cout << a << std::endl;
-  auto b = round(3.5);
+  auto b = round_(3.5);
   std::cout << b << std::endl;
 }
 
@@ -1347,8 +1349,8 @@ struct prime_generator {
       next();
       return *this;
     }
-    inline bool operator == (iterator const& other) const {
-      return other.index == index;
+    inline bool operator != (iterator const& other) {
+      return other.index != index;
     }
     inline int operator * () const {
       return value;

@@ -8,7 +8,7 @@
 #include <complex>
 #include <chrono>
 #include <exception>
-#include <eigen3/Eigen/Dense>
+#include <Eigen/Dense>
 #include "examples.h"
 #include "anothefile.h"
 
@@ -1271,7 +1271,7 @@ namespace efficient_strings
     return d;
   }
 
-  inline String operator ""_str (char const* s, unsigned long n) {
+  inline String operator ""_str (char const* s, size_t n) {
     return String(s, int(n));
   }
 

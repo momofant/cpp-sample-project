@@ -4,7 +4,7 @@
 #include <string.h>
 #include "examples.h"
 
-std::string operator "" _lower(char const* src, unsigned long n)
+std::string operator "" _lower(char const* src, size_t n)
 {
   std::string dst;
   dst.resize(n + 1);
