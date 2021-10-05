@@ -27,13 +27,13 @@ void example58()
         a1 = -1,
     };
 
-    enum class B : uint {
+    enum class B : unsigned int {
         b1 = ~0u,
         b2 = 0
     };
 
     std::cout << int(A::a1) << std::endl;
-    std::cout << uint(B::b1) << std::endl;
+    std::cout << unsigned(B::b1) << std::endl;
 }
 
 enum class Status : int
