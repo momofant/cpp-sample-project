@@ -35,3 +35,12 @@ target_compile_options(democpp PUBLIC
 )
 target_compile_definitions(democpp PUBLIC "$<$<CONFIG:DEBUG>:DEBUG>")
 target_link_libraries(democpp pthread)
+
+enable_testing()
+add_executable(demotest1 test1.cpp)
+
+enable_testing()
+add_executable(demotest2 test2.cpp)
+
+add_test(NAME demotest1 COMMAND demotest1)
+add_test(NAME demotest2 COMMAND demotest2)

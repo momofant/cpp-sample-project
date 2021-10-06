@@ -1,6 +1,7 @@
 #include <iostream>
+#include <assert.h>
+#include <string.h>
 #include "examples.h"
-
 
 int main()
 {
@@ -18,7 +19,5 @@ int main()
         }
     }
 
-    int x;;
-   
     return 0;
 }

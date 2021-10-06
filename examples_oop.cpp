@@ -1366,3 +1366,20 @@ namespace virtual_initialization
     B b;
   }
 }
+
+EXAMPLE_FUNCTION(three_way_cmp, 1) {
+  struct A{
+    int x;
+
+    inline auto operator <=> (A const& other) const {
+      return x <=> other.x;
+    }
+  };
+
+  A a {1}, b{2};
+
+  assert(a < b);
+  assert(!(a > b));
+  assert(!(a >= b));
+  assert(a <= b);
+}

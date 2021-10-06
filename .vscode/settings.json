@@ -54,6 +54,7 @@
         "future": "cpp",
         "numeric": "cpp",
         "ranges": "cpp",
-        "concepts": "cpp"
+        "concepts": "cpp",
+        "compare": "cpp"
     }
 }
